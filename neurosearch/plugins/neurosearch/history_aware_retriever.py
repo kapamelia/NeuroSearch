@@ -2,6 +2,7 @@ from langchain.chains.history_aware_retriever import create_history_aware_retrie
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.chat_models.tongyi import ChatTongyi
 from langchain_weaviate.vectorstores import WeaviateVectorStore
+from langchain_community.chat_models.baidu_qianfan_endpoint import QianfanChatEndpoint
 from .weaviate_client import WeaviateClient
 from .embedding import Embedding
 from .config import Config
@@ -11,11 +12,18 @@ class HistoryAwareRetriever:
     def __init__(self):
         self.embedding = Embedding().get_embedding()
         self.weaviate_client = WeaviateClient().get_client()
-        self.llm = ChatTongyi(
-            model="llama3.1-70b-instruct",
-            temperature=0,
+        # self.llm = ChatTongyi(
+        #     model="llama3.1-70b-instruct",
+        #     temperature=0,
+        #     max_tokens=2048,
+        #     api_key=Config.get_dashscope_api_key(),
+        # )
+        self.llm = QianfanChatEndpoint(
+            model="ERNIE-Speed-Pro-128K",
+            temperature=0.1,
             max_tokens=2048,
-            api_key=Config.get_dashscope_api_key(),
+            api_key=Config.get_qianfan_api_key(),
+            secret_key=Config.get_qianfan_secret_key(),
         )
         self.contextualize_question_prompt = (
             self._create_contextualize_question_prompt()

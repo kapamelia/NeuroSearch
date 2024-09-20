@@ -1,16 +1,17 @@
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.chat_models.tongyi import ChatTongyi
+from langchain_community.chat_models.baidu_qianfan_endpoint import QianfanChatEndpoint
 from .config import Config
 
 
 class QuestionAnswerChain:
     def __init__(self):
-        self.llm = ChatTongyi(
-            model="llama3.1-70b-instruct",
-            temperature=0,
+        self.llm = QianfanChatEndpoint(
+            model="ERNIE-Speed-Pro-128K",
+            temperature=0.1,
             max_tokens=2048,
-            api_key=Config.get_dashscope_api_key(),
+            api_key=Config.get_qianfan_api_key(),
+            secret_key=Config.get_qianfan_secret_key(),
         )
         self.qa_prompt = self._create_qa_prompt()
 
